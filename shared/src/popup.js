@@ -3,7 +3,7 @@
   // local vars for linting (and performance)
   var vendor = window.vendor;
 
-  var VERSION = "1.0.1";
+  var VERSION = "1.2.0";
 
   // upper bar
   var logos = document.querySelectorAll(".group-logo");
@@ -24,11 +24,13 @@
   var aboutButton = document.getElementById("about-button");
   var settingsButton = document.getElementById("settings-button");
   var insertButton = document.getElementById("insert-button");
+  var clearHistoryButton = document.getElementById("clear-history-button");
 
   var copyMessage = document.getElementById("copy-message");
   var copyName = document.getElementById("copy-name");
   var copyUnicode = document.getElementById("copy-unicode");
   var copyImg = document.getElementById("copy-img");
+  var insertName = document.getElementById("insert-name");
 
   var whatToCopy = "name";
   var lastCopyValue = "";
@@ -106,7 +108,7 @@
   }
 
   function addEmojiClickListener(node) {
-    node.addEventListener("click", function() {
+    node.addEventListener("click", function(event) {
       var item = {
         name: node.dataset.name,
         unicode: node.dataset.unicode,
@@ -142,6 +144,10 @@
           vendor.copyToClipboard(lastCopyValue);
           showCopyMessage("Image");
         break;
+        case "insertname":
+            vendor.insertToActive(detailInput.value);
+            showMessage("Added " + detailInput.value + " to active page input.");
+        break;
         // name
         default:
           lastCopyValue = detailInput.value;
@@ -154,6 +160,7 @@
   function appendItem(container, item) {
     var cont = document.createElement("div");
     cont.classList.add("emoji");
+    cont.title = item.name;
     cont.dataset.name = item.name;
     cont.dataset.unicode = item.unicode || "";
     cont.style.backgroundPosition = item.pos;
@@ -211,6 +218,18 @@
       setActiveGroup(settingsButton);
     });
   }
+
+  clearHistoryButton.addEventListener("click", function() {
+    var item = {
+      name: "lemon",
+      pos: "0px 0px",
+      unicode: "🍋"
+    };
+    recent = [];
+    vendor.setLocal("recent", recent);
+    vendor.setLocal("last", item);
+    showDetail(item);
+  });
 
   detailInput.addEventListener("click", function() {
     lastCopyValue = detailInput.value;
@@ -315,6 +334,9 @@
           case "copyimg":
             copyImg.checked = true;
           break;
+          case "insertname":
+            insertName.checked = true;
+          break;
         }
       }
     });
@@ -347,6 +369,13 @@
     whatToCopy = "unicode";
     vendor.setLocal("copy-setting", "unicode");
   });
+
+  if(insertName) {
+      insertName.addEventListener("click", function () {
+        whatToCopy = "insertname";
+        vendor.setLocal("copy-setting", "insertname");
+      });
+  }
 
   copyImg.addEventListener("click", function () {
     whatToCopy = "copyimg";

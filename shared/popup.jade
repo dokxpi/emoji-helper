@@ -21,20 +21,24 @@ html
       each group, n in emojis
         .group(id=n, data-emoji="true")
           each emoji in group
-            .emoji(data-name=emoji.name, data-unicode=emoji.unicode, style="background-position:#{-emoji.x / 2}px #{-emoji.y / 2}px;")
+            .emoji(title=emoji.name, data-name=emoji.name, data-unicode=emoji.unicode, style="background-position:#{-emoji.x / 2}px #{-emoji.y / 2}px;")
       .group(id="search-container",data-emoji=true)
       .group(id="settings-container")
         h2 Settings
-        p.setting-title Default value to copy on click
+        p.setting-title Default action on click
         p.setting
           input#copy-name(type="radio", name="default-copy", value="name" checked)
-          label(for="copy-name") :name:
+          label(for="copy-name") copy :name:
           br
           input#copy-unicode(type="radio", name="default-copy", value="unicode")
-          label(for="copy-unicode") unicode symbol
+          label(for="copy-unicode") copy unicode symbol
           br
           input#copy-img(type="radio", name="default-copy", value="copyimg")
           label(for="copy-img") copy image (for Mail, Google Docs, MS Office and more)
+          if browser == "Chrome" || browser == "Firefox"
+            br
+            input#insert-name(type="radio", name="default-copy", value="insertname")
+            label(for="insert-name") Insert :name: into active input
         if browser == "Firefox"
           hr
           p.setting-title Keyboard shortcut
@@ -47,6 +51,10 @@ html
             br
             input#hotkey-none(type="radio", name="hotkey", value="none")
             label(for="hotkey-none") None
+        hr
+        span.setting-title History
+        button#clear-history-button.detail-button(title="Clear history")
+            i.ion-trash-b
       .group(id="about-container")
         h1
           | Emoji
@@ -77,16 +85,19 @@ html
             img.about-text-img(src="./img/emoji/heart.png")
         div.half
           p.center
-            | Version 1.0.1 - 
-            img.about-text-img(src="./img/emoji/whale.png")
+            | Version 1.2.0 - 
+            img.about-text-img(src="./img/emoji/octopus.png")
           hr
           ul
-            if browser == "Chrome" || browser == "Firefox"
-              li New button to insert emoji directly into the current page
-            li New settings menu
+            li
+              | "Clear history" option in the settings (by 
+              +link("https://github.com/jackunion") @jackunion
+              | )
+            li
+              | Show the emoji name on hover, also by 
+              +link("https://github.com/jackunion") @jackunion
             if browser == "Firefox"
-              li Repositioned the popup
-              li Ctrl-E or Ctrl-Y as browser shortcuts
+              li Now works in Firefox private mode! Duh!
           hr
           p
             +link("https://github.com/johannhof/emoji-helper/releases")
